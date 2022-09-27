@@ -26,10 +26,11 @@ sysfonts::font_add("AULogoReg", regular = "U:/WCPG2022_Oral_Presentation/fonte/A
 
 showtext::showtext_auto()
 
-tuesdata <- tidytuesdayR::tt_load('2022-03-22')
-babynames <- tuesdata$babynames
+babynames <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-03-22/babynames.csv')
+# 
+# saveRDS(babynames, file = "C:/Users/au482473/Documents/babynames.rds")
 
-rm(tuesdata)
+# babynames <- readRDS("C:/Users/au482473/Documents/babynames.rds")
 
 world_pop <- as_tibble(read.csv2("U://Advanced_R_Course/Advanced-R-Project/world_pop.txt", header = TRUE, sep = "\t")) %>% 
   mutate(., n_world = as.numeric(gsub(",", "", n))) %>% 
@@ -41,6 +42,7 @@ to_add <- to_add %>%
   mutate(., Year = setdiff(babynames$year, world_pop$Year))
 
 world_pop <- bind_rows(world_pop, to_add) %>% 
+  filter(., Year != 1880) %>% 
   arrange(., Year) %>% 
   mutate(., Year = if_else(Year == 1850, 1880, Year))
 
